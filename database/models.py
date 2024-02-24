@@ -18,12 +18,17 @@ class Base(AsyncAttrs, DeclarativeBase):
 class User(Base):
     __tablename__ = "user_account"
     user_id: Mapped[int] = mapped_column(primary_key=True)
-    name = mapped_column(String(30))
     balance: Mapped[int] = mapped_column(default=0)
+    name = mapped_column(String(30))
+    rank: Mapped[str] = mapped_column(default='fresh')
+    donat_rank: Mapped[str] = mapped_column(default='еблан')
     registration: Mapped[int] = mapped_column(default=0)
     ban: Mapped[int] = mapped_column(default=0)
+    lives: Mapped[int] = mapped_column(default=10)
+    fuck: Mapped[int] = mapped_column(default=10)
     registration_time =  mapped_column(String)
-    fuck_time: Mapped[str] = mapped_column(default=0)
+    fucked_up: Mapped[int] = mapped_column(default=0)
+    reck_time: Mapped[str] = mapped_column(default=0)
     revival_time: Mapped[str] = mapped_column(default=0)
     mode: Mapped[int] = mapped_column(default=0)
 
@@ -31,3 +36,7 @@ class User(Base):
 async def asyn_main():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+
+
+
+

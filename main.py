@@ -10,6 +10,7 @@ from Handlers.callback_start import call_router
 from database.models import asyn_main
 
 
+
 async def main() -> None:
     await asyn_main()
     bot = Bot(config.TOKEN)
