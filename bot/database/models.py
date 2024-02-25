@@ -21,7 +21,7 @@ class User(Base):
     balance: Mapped[int] = mapped_column(default=0)
     name = mapped_column(String(30))
     rank: Mapped[str] = mapped_column(default='fresh')
-    donat_rank: Mapped[str] = mapped_column(default='еблан')
+    vip_rank: Mapped[str] = mapped_column(default='бомж')
     registration: Mapped[int] = mapped_column(default=0)
     ban: Mapped[int] = mapped_column(default=0)
     lives: Mapped[int] = mapped_column(default=10)

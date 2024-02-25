@@ -1,7 +1,8 @@
 TOKEN = '6341138136:AAE-8UbHtD1xAn-kzVXjXZjpApEfcqtaOfM'
 
-SQLITEALHEMY_URL = "sqlite+aiosqlite:///database/db.sqlite3"
 
+SQLITEALHEMY_URL = "sqlite+aiosqlite:///bot/database/db.sqlite3"
+             
 
 lox_bonus_fuck = 30
 lox_bonus_lifes = 30
@@ -24,6 +25,7 @@ zabivnoy_bonus_lifes = 80
 glavniy_bonus_fuck = 90
 glavniy_bonus_lifes = 90
 
+
 bonuses = {
             'лох': (lox_bonus_fuck, lox_bonus_lifes),
             'никто': (nikto_bonus_fuck, nikto_bonus_lifes),
@@ -33,7 +35,6 @@ bonuses = {
             'забивной': (zabivnoy_bonus_fuck, zabivnoy_bonus_lifes),
             'главный': (glavniy_bonus_fuck, glavniy_bonus_lifes),
         }
-
 
 
 def determine_rank(fuck_value: int) -> str:
@@ -54,6 +55,7 @@ def determine_rank(fuck_value: int) -> str:
         return 'лох'
     else:
         return 'лох'
+    
     
 def next_rank(user_fuck: int, user_rank: str):
     if user_rank == 'главный':

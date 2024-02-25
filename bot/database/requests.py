@@ -5,6 +5,7 @@ from config import bonuses, determine_rank, next_rank
 from typing import Optional, Tuple, Union
 
 
+
 async def registration_user(user_id: int, data: dict) -> User:
     async with async_session() as session:
         existing_user = await session.get(User, user_id)
@@ -39,7 +40,6 @@ async def update_fuck(user_id: int, number: int):
                 )
                 await session.commit()
         return
-
 
 
 async def update_lives(opponent_id: int, number: int):
@@ -115,7 +115,13 @@ async def update_rank_user(user_id: int) -> Tuple[bool, Union[int, str, int]]:
             return False, current_rank, new_score_user  # Возвращаем False, текущий ранг и количество текущих fuck, если ранг не изменился
 
 
+async def score_rang(user_id: int) -> int:
+    async with async_session() as session:
+        res = await session.execute(select(User.fucked_up, User.rank).where(User.user_id == user_id))
+        score_ran, rang = res.first()
 
+        user_score = next_rank(score_ran, rang)
+        return user_score
 
 
 
