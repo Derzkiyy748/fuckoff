@@ -1,11 +1,16 @@
+#   МОДУЛИ
+#-------------------------------------------------------------#
 from aiogram import Bot
 from aiogram.types import Message
 from database.requests import get_user
 from Keyboards.inline import profile_kb, profile_kb_1
 from message import profile_text
+#-------------------------------------------------------------#
+#-------------------------------------------------------------#
 
 
-# Профиль для групп
+#   ПРОФИЛЬ ПОЛЬЗОВАТЕЛЯ ГРУППА
+#-------------------------------------------------------------#
 async def profile_user(user_id: int, bot: Bot, message: Message, next_rang: int):
     try:
         profile = await get_user(user_id)
@@ -27,9 +32,12 @@ async def profile_user(user_id: int, bot: Bot, message: Message, next_rang: int)
 
     except Exception as e:
         print(f"Error in send_user_profile function: {e}")
+#-------------------------------------------------------------#
+#-------------------------------------------------------------#
+        
 
-
-# Профиль для личных сообщений
+#   ПРОФИЛЬ ДЛЯ ЛИЧНЫХ СООБЩЕНИЙ
+#-------------------------------------------------------------#
 async def profile_user_1(user_id: int, bot: Bot, message: Message, next_rang: int):
     try:
         profile = await get_user(user_id)
@@ -51,3 +59,5 @@ async def profile_user_1(user_id: int, bot: Bot, message: Message, next_rang: in
 
     except Exception as e:
         print(f"Error in send_user_profile function: {e}")
+#-------------------------------------------------------------#
+#-------------------------------------------------------------#

@@ -1,9 +1,12 @@
 # Импорт модуля конфигурации с именем 'config'
 import config
+import DateTime
+import datetime
+from datetime import datetime
 
 # Импорт необходимых модулей из SQLAlchemy для работы с базой данных
-from sqlalchemy import BigInteger, ForeignKey, String,  Column, Integer
-from sqlalchemy.orm import relationship, Mapped, mapped_column, DeclarativeBase
+from sqlalchemy import String, Column
+from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase
 from sqlalchemy.ext.asyncio import AsyncAttrs, async_sessionmaker, create_async_engine
 
 # Создание асинхронного SQLite-движка с использованием предоставленной конфигурации
@@ -28,8 +31,7 @@ class User(Base):
     fuck: Mapped[int] = mapped_column(default=10)
     registration_time =  mapped_column(String)
     fucked_up: Mapped[int] = mapped_column(default=0)
-    reck_time: Mapped[str] = mapped_column(default=0)
-    revival_time: Mapped[str] = mapped_column(default=0)
+    bonus_time: Mapped[int] = mapped_column(default=datetime.utcnow)
     mode: Mapped[int] = mapped_column(default=0)
 
     

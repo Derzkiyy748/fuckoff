@@ -1,3 +1,5 @@
+import config
+
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
@@ -14,7 +16,7 @@ def start_kb() -> InlineKeyboardMarkup:
 def profile_kb(user_id: int) -> InlineKeyboardMarkup:
     kb = InlineKeyboardBuilder()
 
-    kb.button(text = 'Получить жизни и удары', url='https://telegra.ph/KAK-POLUCHIT-ZHIZNI-I-UDARY-V-BOTE-02-24')
+    kb.button(text = 'Получить жизни и удары', url=config.link)
     return kb.as_markup()
 
 

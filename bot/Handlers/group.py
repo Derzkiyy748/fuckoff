@@ -1,24 +1,23 @@
 import datetime
-import time
 
 from modules.Filters import Filter
 from aiogram.types import Message, CallbackQuery
-from aiogram import F, filters, Router, Bot
+from aiogram import F, Router, Bot
 from aiogram.filters import CommandStart, Command
 from message import (no_start_text, yes_start_text,
                       commands_text, reply_message,
                         trigger, rank_text)
 from Keyboards.inline import start_kb
 from database.requests import (registration_user, get_user,update_fuck,
-                                select_user,  update_lives, select_opponent,
+                                select_user,  update_lives,
                                   update_rank_user, score_rang)
-from database.models import User
 from datetime import datetime
 from modules.check_group import is_reply_from_bot
 from modules.profile import profile_user
 
 
 router = Router()
+
 
 
 @router.message(CommandStart(), Filter(chat=["group", "private"]))
@@ -39,6 +38,7 @@ async def start(message: Message, bot: Bot):
 
     except Exception as e:
         await message.reply(f"Произошла ошибка при регистрации: {e}")
+
 
 
 @router.message(F.text.in_(trigger), Filter(chat=["group"]))
@@ -84,15 +84,19 @@ async def fuck(message: Message, bot: Bot):
         await message.reply(reply_message(opponent_name, opponent_username, selected_user, opponent, result[2]), parse_mode='html')
 
 
+
 @router.message(Command("help"), Filter(chat=["group", "private"]))
 async def help(message: Message) -> str:
     await message.reply(commands_text(), parse_mode='html')
+
+
 
 @router.message(Command('rank'), Filter(chat=["group", "private"]))
 async def rank(message: Message) -> str:
     user_id = message.from_user.id
     user = await select_user(user_id)
     await message.reply(rank_text(user.rank), parse_mode='html')
+
 
 
 @router.message(F.text.in_(['п', 'профиль', 'Профиль', 'П']), Filter(chat=["group"]))
