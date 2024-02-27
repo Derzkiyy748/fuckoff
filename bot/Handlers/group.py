@@ -1,12 +1,13 @@
+#   ИМПОРТЫ
+#-------------------------------------------------------------#
 import datetime
 
 from modules.Filters import Filter
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import Message
 from aiogram import F, Router, Bot
 from aiogram.filters import CommandStart, Command
 from message import (no_start_text, yes_start_text,
-                      commands_text, reply_message,
-                        trigger, rank_text)
+                      commands_text, reply_message,rank_text)
 from Keyboards.inline import start_kb
 from database.requests import (registration_user, get_user,update_fuck,
                                 select_user,  update_lives,
@@ -14,12 +15,19 @@ from database.requests import (registration_user, get_user,update_fuck,
 from datetime import datetime
 from modules.check_group import is_reply_from_bot
 from modules.profile import profile_user
+#-------------------------------------------------------------#
+#-------------------------------------------------------------#
 
 
+#   СОЗДАНИЕ РОУТЕРА  
+#-------------------------------------------------------------#
 router = Router()
+#-------------------------------------------------------------#
+#-------------------------------------------------------------#
 
 
-
+#   ОБРАБОТЧИК КОМАНДЫ СТАРТ
+#-------------------------------------------------------------#
 @router.message(CommandStart(), Filter(chat=["group", "private"]))
 async def start(message: Message, bot: Bot):
     user_id = message.from_user.id
@@ -38,10 +46,14 @@ async def start(message: Message, bot: Bot):
 
     except Exception as e:
         await message.reply(f"Произошла ошибка при регистрации: {e}")
+#-------------------------------------------------------------#
+#-------------------------------------------------------------#
 
 
-
-@router.message(F.text.in_(trigger), Filter(chat=["group"]))
+#   ОБРАБОТЧИК СПИСКА УДАРА
+#-------------------------------------------------------------#
+@router.message(F.text.in_(['уебать', 'Уебать', 'Ебнуть', 'ебануть', 'Ебануть', 'ебнуть', 'fuck', 'е', 'Е']),
+                Filter(chat=["group"]))
 async def fuck(message: Message, bot: Bot):
     user_id = message.from_user.id
     reply = message.reply_to_message
@@ -82,23 +94,32 @@ async def fuck(message: Message, bot: Bot):
         await message.reply(reply_message(opponent_name, opponent_username, selected_user, opponent, result[2]), parse_mode='html')
     else:
         await message.reply(reply_message(opponent_name, opponent_username, selected_user, opponent, result[2]), parse_mode='html')
+#-------------------------------------------------------------#
+#-------------------------------------------------------------#
 
 
-
+#   ОБРАБОТЧИК КОМАНДЫ ПОМОЩЬ
+#-------------------------------------------------------------#
 @router.message(Command("help"), Filter(chat=["group", "private"]))
 async def help(message: Message) -> str:
     await message.reply(commands_text(), parse_mode='html')
+#-------------------------------------------------------------#
+#-------------------------------------------------------------#
 
 
-
+#   ОБРАБОТЧИК КОМАНДЫ РАНК
+#-------------------------------------------------------------#
 @router.message(Command('rank'), Filter(chat=["group", "private"]))
 async def rank(message: Message) -> str:
     user_id = message.from_user.id
     user = await select_user(user_id)
     await message.reply(rank_text(user.rank), parse_mode='html')
+#-------------------------------------------------------------#
+#-------------------------------------------------------------#
 
 
-
+#   ОБРАБОТЧИК КОМАНДЫ ПРОФИЛЬ ДЛЯ ГРУПП
+#-------------------------------------------------------------#
 @router.message(F.text.in_(['п', 'профиль', 'Профиль', 'П']), Filter(chat=["group"]))
 async def profile(message: Message, bot: Bot) -> str:
     user_id = message.from_user.id
@@ -106,3 +127,5 @@ async def profile(message: Message, bot: Bot) -> str:
     profile = await profile_user(user_id, bot, message, int(next_rank))
     
     return profile
+#-------------------------------------------------------------#
+#-------------------------------------------------------------#
