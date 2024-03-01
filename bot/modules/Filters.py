@@ -1,5 +1,7 @@
 #   МОДУЛИ
 #-------------------------------------------------------------#
+import config
+
 from aiogram.types import Message, CallbackQuery, Union
 from aiogram.filters import BaseFilter
 #-------------------------------------------------------------#
@@ -31,5 +33,14 @@ class Filter(BaseFilter):
             return call.message.chat.type == self.chat
         else:
             return call.message.chat.type in self.chat
+#-------------------------------------------------------------#
+#-------------------------------------------------------------#
+
+
+#   ФИЛЬТР АДМИНА
+#-------------------------------------------------------------# 
+class IsAdmin(BaseFilter):
+    async def __call__(self, message: Message) -> bool:
+        return message.from_user.id == config.admin_id
 #-------------------------------------------------------------#
 #-------------------------------------------------------------#

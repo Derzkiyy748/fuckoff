@@ -185,4 +185,14 @@ async def score_rang(user_id: int) -> int:
 
 
 
+
+async def edit_nic(user_id, new_nick):
+    async with async_session() as session:
+
+        await session.execute(update(User).where(User.user_id == user_id).values(nick=new_nick))
+        await session.commit()
+
+
+
+
            

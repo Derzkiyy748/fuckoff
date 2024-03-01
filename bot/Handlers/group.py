@@ -11,7 +11,7 @@ from message import (no_start_text, yes_start_text,
 from Keyboards.inline import start_kb
 from database.requests import (registration_user, get_user,update_fuck,
                                 select_user,  update_lives,
-                                  update_rank_user, score_rang)
+                                  update_rank_user, score_rang, edit_nic)
 from datetime import datetime
 from modules.check_group import is_reply_from_bot
 from modules.profile import profile_user
@@ -32,7 +32,7 @@ router = Router()
 async def start(message: Message, bot: Bot):
     user_id = message.from_user.id
     user_data = {
-        'name': message.from_user.full_name,
+        'nick': message.from_user.first_name,
         'balance': 50,
         'registration_time': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     }
@@ -129,3 +129,25 @@ async def profile(message: Message, bot: Bot) -> str:
     return profile
 #-------------------------------------------------------------#
 #-------------------------------------------------------------#
+
+
+
+
+@router.message(F.text.startswith('+сменить ник'))
+async def edit_nickname(message: Message, bot: Bot):
+    edit_nick = message.text
+    new_nick = edit_nick[13:100]
+    try:
+
+        if len(new_nick) > 40:
+            await message.reply(f'❌Больше 10 символов в нике - не поддерживается {len(new_nick)}')
+
+        else:
+            user_id = message.from_user.id
+            await message.reply(f'✅Вы успешно сменили ник! {new_nick}')
+            await edit_nic(user_id, new_nick)
+    except Exception as e:
+        await message.reply(f"Произошла ошибка при регистрации: {e}")
+
+
+
