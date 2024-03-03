@@ -44,7 +44,7 @@ class Base(AsyncAttrs, DeclarativeBase):
 class User(Base):
     __tablename__ = "user_account"
     user_id: Mapped[int] = mapped_column(primary_key=True)
-    balance: Mapped[int] = mapped_column(default=0)
+    vip_balance: Mapped[int] = mapped_column(default=0)
     nick: Mapped[str] = mapped_column()
     rank: Mapped[str] = mapped_column(default='fresh')
     vip_rank: Mapped[str] = mapped_column(default='бомж')
@@ -56,6 +56,21 @@ class User(Base):
     fucked_up: Mapped[int] = mapped_column(default=0)
     bonus_time: Mapped[int] = mapped_column(default=datetime.utcnow)
     mode: Mapped[int] = mapped_column(default=0)
+
+
+
+class Chat(Base):
+    __tablename__ = "chat"
+    chat_id: Mapped[int] = mapped_column(primary_key=True)
+
+
+
+class Setting(Base):
+    __tablename__ = "set"
+    id: Mapped[int] = mapped_column(primary_key=True, default=1)
+    rate_life: Mapped[float] = mapped_column(default=1.0)
+    rate_fuck: Mapped[float] = mapped_column(default=1.0)
+    
 #-------------------------------------------------------------#
 #-------------------------------------------------------------#
 

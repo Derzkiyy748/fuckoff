@@ -4,7 +4,7 @@ import datetime
 from datetime import datetime
 from datetime import timedelta
 
-from database.models import User, async_session
+from database.models import User, Setting, async_session
 from sqlalchemy import select, update
 from sqlalchemy.orm import selectinload
 from config import bonuses, determine_rank, next_rank
@@ -15,7 +15,7 @@ from typing import Tuple, Union
 
 #   РЕГИСТРАЦИЯ
 #-------------------------------------------------------------#
-async def registration_user(user_id: int, data: dict) -> User:
+async def insert_user(user_id: int, data: dict) -> User:
     async with async_session() as session:
         existing_user = await session.get(User, user_id)
         if existing_user:
@@ -193,6 +193,54 @@ async def edit_nic(user_id, new_nick):
         await session.commit()
 
 
+async def update_vip_coin(user_id, coin):
+    async with async_session() as session:
+        await session.execute(     
+                update(User)
+                .where(User.user_id == user_id)  # Обновляем ранг пользователя в базе данных
+                .values(vip_balance = User.vip_balance - coin)
+            )
+        await session.commit()
+
+
+async def update_fuck_ob(user_id: int, fuck: int):
+    async with async_session() as session:
+        await session.execute(     
+                update(User)
+                .where(User.user_id == user_id)  # Обновляем ранг пользователя в базе данных
+                .values(fuck = User.fuck + fuck)
+            )
+        await session.commit()
+
+
+
+async def update_lives_ob(user_id: int, life: int):
+    async with async_session() as session:
+
+        await session.execute(update(User).where(User.user_id == user_id).values(lives = User.lives + life))
+        await session.commit()
+
+
+async def select_all_users():
+    async with async_session() as session:
+        # Use selectinload('*') to load all columns from the User model
+        result = await session.execute(select(User).options(selectinload('*')))
+        users = result.scalars().all()
+
+        return users
+
+async def update_rate(rate_l, rate_h):
+    async with async_session() as session:
+        await session.execute(update(Setting).where(Setting.id == 1).values(rate_life = rate_l, rate_fuck = rate_h))
+        await session.commit()
+
+
+
+
+async def get_set():
+    async with async_session() as session:
+        set = await session.get(Setting, 1)
+        return set
 
 
            

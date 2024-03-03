@@ -1,17 +1,19 @@
 #   ИМПОРТЫ
 #-------------------------------------------------------------#
 import datetime
+import config
 
 from modules.Filters import Filter
 from aiogram.types import Message
 from aiogram import F, Router, Bot
 from aiogram.filters import CommandStart, Command
 from message import (no_start_text, yes_start_text,
-                      commands_text, reply_message,rank_text)
+                      commands_text, reply_message,rank_text, rate_text)
 from Keyboards.inline import start_kb
-from database.requests import (registration_user, get_user,update_fuck,
+from database.requests import (insert_user, get_user,update_fuck,
                                 select_user,  update_lives,
-                                  update_rank_user, score_rang, edit_nic)
+                                  update_rank_user, score_rang, edit_nic,
+                                  update_vip_coin, update_lives_ob, update_fuck_ob, get_set)
 from datetime import datetime
 from modules.check_group import is_reply_from_bot
 from modules.profile import profile_user
@@ -33,12 +35,12 @@ async def start(message: Message, bot: Bot):
     user_id = message.from_user.id
     user_data = {
         'nick': message.from_user.first_name,
-        'balance': 50,
+        'vip_balance': 50,
         'registration_time': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     }
     try:
         if not await get_user(user_id):
-            await registration_user(user_id, user_data)
+            await insert_user(user_id, user_data)
             await message.reply(no_start_text(), reply_markup=start_kb())
         else:
             await message.reply(yes_start_text(), reply_markup=start_kb())
@@ -114,6 +116,14 @@ async def rank(message: Message) -> str:
     user_id = message.from_user.id
     user = await select_user(user_id)
     await message.reply(rank_text(user.rank), parse_mode='html')
+
+
+@router.message(Command('rate'), Filter(chat=["group", "private"]))
+async def rank(message: Message) -> str:
+    user_id = message.from_user.id
+    set = await get_set()
+    
+    await message.reply(rate_text(set.rate_life, set.rate_fuck), parse_mode='html')
 #-------------------------------------------------------------#
 #-------------------------------------------------------------#
 
@@ -133,14 +143,14 @@ async def profile(message: Message, bot: Bot) -> str:
 
 
 
-@router.message(F.text.startswith('+сменить ник'))
+@router.message(F.text.startswith('+ник'))
 async def edit_nickname(message: Message, bot: Bot):
     edit_nick = message.text
-    new_nick = edit_nick[13:100]
+    new_nick = edit_nick[5:100]
     try:
 
         if len(new_nick) > 40:
-            await message.reply(f'❌Больше 10 символов в нике - не поддерживается {len(new_nick)}')
+            await message.reply(f'❌Больше 40 символов в нике - не поддерживается\nКоличество: {len(new_nick)}')
 
         else:
             user_id = message.from_user.id
@@ -148,6 +158,73 @@ async def edit_nickname(message: Message, bot: Bot):
             await edit_nic(user_id, new_nick)
     except Exception as e:
         await message.reply(f"Произошла ошибка при регистрации: {e}")
+
+
+@router.message(F.text.startswith('+обмен у'))
+async def obmen_coin(message: Message, bot: Bot):
+    user_id = message.from_user.id
+    text = message.text[9:100].strip() 
+
+    if not text:
+        return await message.reply('❌Укажите количество vip_coin для обмена.')
+
+    try:
+        amount_to_exchange = int(text)
+    except ValueError:
+        return await message.reply('❌Неверный формат. Укажите количество vip_coin целым числом.')
+
+    user = await select_user(user_id)
+
+    if user.vip_balance < amount_to_exchange:
+        return await message.reply('❌У вас недостаточно vip_coin для обмена на удары.')
+    
+    rate = await get_set()
+
+    hits_granted = amount_to_exchange * rate.rate_fuck
+
+    await update_fuck_ob(user_id, hits_granted)
+    await update_vip_coin(user_id, amount_to_exchange)
+
+    user = await select_user(user_id)
+
+    await message.reply(f'✅Вы успешно обменяли {amount_to_exchange} vip_coin на {int(hits_granted)} удар(ов).\n'
+                        f'Теперь у вас {user.fuck} удар(ов) и {user.vip_balance} vip_coin.')
+    
+
+
+@router.message(F.text.startswith('+обмен ж'))
+async def obmen_coin(message: Message, bot: Bot):
+    user_id = message.from_user.id
+    text = message.text[9:100].strip() 
+
+    if not text:
+        return await message.reply('❌Укажите количество vip_coin для обмена на жизни.')
+
+    try:
+        amount_to_exchange = int(text)
+    except ValueError:
+        return await message.reply('❌Неверный формат. Укажите количество vip_coin целым числом.')
+
+    user = await select_user(user_id)
+
+    if user.vip_balance < amount_to_exchange:
+        return await message.reply('❌У вас недостаточно vip_coin для обмена.')
+    
+    rate = await get_set()
+
+    life_granted = amount_to_exchange * rate.rate_life
+
+    await update_lives_ob(user_id, life_granted)
+    await update_vip_coin(user_id, amount_to_exchange)
+
+    user = await select_user(user_id)
+
+    await message.reply(f'✅Вы успешно обменяли {amount_to_exchange} vip_coin на {int(life_granted)} жизнь(ей).\n'
+                        f'Теперь у вас {user.lives} жизнь(ей) и {user.vip_balance} vip_coin.')
+
+    
+    
+
 
 
 

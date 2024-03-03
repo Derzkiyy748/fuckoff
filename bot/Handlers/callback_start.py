@@ -20,7 +20,7 @@ call_router = Router()
 #-------------------------------------------------------------#
 @call_router.callback_query(F.data == "command", Filter(chat = ["group", "private"]))
 async def command(call: CallbackQuery, bot: Bot):
-    await call.message.reply(commands_text())
+    await call.message.reply(commands_text(), parse_mode="html")
 #-------------------------------------------------------------#
 #-------------------------------------------------------------#
 
