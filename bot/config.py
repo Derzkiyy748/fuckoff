@@ -1,16 +1,16 @@
 #   ПОДКЛЮЧЕНИЕ БАЗЫ ДАННЫХ И БОТА
 #-------------------------------------------------------------#
 TOKEN = '6341138136:AAE-8UbHtD1xAn-kzVXjXZjpApEfcqtaOfM'
-SQLITEALHEMY_URL = "sqlite+aiosqlite:///bot/database/db.sqlite3"
+SQLITEALHEMY_URL = "sqlite+aiosqlite:///fuckoff/bot/database/db.sqlite3"
 link = 'https://telegra.ph/KAK-POLUCHIT-ZHIZNI-I-UDARY-V-BOTE-02-24'
 #-------------------------------------------------------------#
 #-------------------------------------------------------------#
 
-TIME = 12 * 60 * 60
+TIME = 60 * 60
 
 RATE_PERCENTAGES = {1.5: 60, 2: 40, 3: 35, 4: 30, 5: 20, 10: 5}
 
-admin_id = {}
+ADMIN_ID = {1059702390}
 
 #   НАСТРОЙКИ БОНУСА У КАЖДОГО РАНГА
 #-------------------------------------------------------------#
@@ -64,7 +64,7 @@ photo_rank = {
     'главный': 'photo_rank/главный.jpg',
     'fresh': 'photo_rank/fresh.jpg'
 }
-print(photo_rank['fresh'])
+print('Фото ранга воркает!')
 #-------------------------------------------------------------#
 #-------------------------------------------------------------#
 
@@ -117,5 +117,3 @@ def next_rank(user_fuck: int, user_rank: str):
     else:
         return 1 - user_fuck
 #-------------------------------------------------------------#
-
-

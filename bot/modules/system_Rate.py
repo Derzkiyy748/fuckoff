@@ -3,6 +3,7 @@ import asyncio
 import config
 
 from database.requests import select_all_users, update_rate
+from message import message_rate
 
 async def choose_numbers_by_percentages(percentages):
     """
@@ -44,6 +45,6 @@ async def system_rate(bot):
             chosen_number = await choose_numbers_by_percentages(number_percentages)
            
             await update_rate(float(chosen_number[0]), float(chosen_number[1]))
-            await bot.send_message(user_id, f"🚀Новый курс обмена🚀\n\n❤️Обмен на жизни: 1коин - {chosen_number[0]}\n⚔️Обмен на удары: 1коин - {chosen_number[1]}")
+            await bot.send_message(user_id, message_rate(chosen_number), parse_mode='html')
             await asyncio.sleep(config.TIME)
         await asyncio.sleep(config.TIME)

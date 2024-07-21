@@ -9,7 +9,7 @@ from aiogram.filters import CommandStart, Command
 from message import (no_start_text, yes_start_text,
                       commands_text, reply_message,rank_text)
 from Keyboards.inline import start_kb
-from database.requests import (registration_user, get_user,update_fuck,
+from database.requests import (get_user,update_fuck,
                                 select_user,  update_lives,
                                   update_rank_user, score_rang, edit_nic)
 from datetime import datetime

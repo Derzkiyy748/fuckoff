@@ -241,6 +241,46 @@ async def get_set():
     async with async_session() as session:
         set = await session.get(Setting, 1)
         return set
+    
+
+
+async def bonus_t(user_id, bonus_interval_minutes=40):
+    async with async_session() as session:
+        try:
+            result = await session.execute(select(User.bonus_time).where(User.user_id == user_id))
+            last_bonus_time_str = result.scalar()
+
+            # Provide a default value if last_bonus_time_str is None
+            last_bonus_time_str = last_bonus_time_str or datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+
+            # Remove fractions of a second
+            last_bonus_time_str = last_bonus_time_str.split('.')[0]
+
+            last_bonus_time = datetime.strptime(last_bonus_time_str, '%Y-%m-%d %H:%M:%S')
+
+            time_since_last_bonus_claim = datetime.utcnow() - last_bonus_time
+            time_until_next_bonus = timedelta(minutes=bonus_interval_minutes) - time_since_last_bonus_claim
+
+            # Ensure the time until the next bonus is not negative
+            time_until_next_bonus = max(time_until_next_bonus, timedelta(minutes=0))
+
+            # Calculate the target datetime by adding time_until_next_bonus to the current time
+            target_datetime = datetime.utcnow() + time_until_next_bonus
+
+            # Print the bonus content for debugging
+            print("Bonus content:", last_bonus_time, time_since_last_bonus_claim, time_until_next_bonus)
+
+            # Return the formatted datetime as a string without milliseconds
+            return target_datetime.replace(microsecond=0).strftime('%H:%M:%S')
+        except Exception as e:
+            print(f"Error in bonus_t function: {e}")
+            return None
+
+
+
+
+
+        
 
 
            

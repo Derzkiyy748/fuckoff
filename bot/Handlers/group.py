@@ -9,7 +9,7 @@ from aiogram import F, Router, Bot
 from aiogram.filters import CommandStart, Command
 from message import (no_start_text, yes_start_text,
                       commands_text, reply_message,rank_text, rate_text)
-from Keyboards.inline import start_kb
+from Keyboards.inline import start_kb, menu_kb
 from database.requests import (insert_user, get_user,update_fuck,
                                 select_user,  update_lives,
                                   update_rank_user, score_rang, edit_nic,
@@ -30,7 +30,7 @@ router = Router()
 
 #   ОБРАБОТЧИК КОМАНДЫ СТАРТ
 #-------------------------------------------------------------#
-@router.message(CommandStart(), Filter(chat=["group", "private"]))
+@router.message(CommandStart())
 async def start(message: Message, bot: Bot):
     user_id = message.from_user.id
     user_data = {
@@ -48,14 +48,32 @@ async def start(message: Message, bot: Bot):
 
     except Exception as e:
         await message.reply(f"Произошла ошибка при регистрации: {e}")
+
+@router.message(CommandStart(), Filter(chat=["private"]))
+async def start(message: Message, bot: Bot):
+    user_id = message.from_user.id
+    user_data = {
+        'nick': message.from_user.first_name,
+        'vip_balance': 50,
+        'registration_time': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    }
+    try:
+        if not await get_user(user_id):
+            await insert_user(user_id, user_data)
+            await message.reply(no_start_text(), reply_markup=menu_kb())
+        else:
+            await message.reply(yes_start_text(), reply_markup=menu_kb())
+        return
+
+    except Exception as e:
+        await message.reply(f"Произошла ошибка при регистрации: {e}")
 #-------------------------------------------------------------#
 #-------------------------------------------------------------#
 
 
 #   ОБРАБОТЧИК СПИСКА УДАРА
 #-------------------------------------------------------------#
-@router.message(F.text.in_(['уебать', 'Уебать', 'Ебнуть', 'ебануть', 'Ебануть', 'ебнуть', 'fuck', 'е', 'Е']),
-                Filter(chat=["group"]))
+@router.message(F.text.in_(['уебать', 'Уебать', 'Ебнуть', 'ебануть', 'Ебануть', 'ебнуть', 'fuck', 'е', 'Е']))
 async def fuck(message: Message, bot: Bot):
     user_id = message.from_user.id
     reply = message.reply_to_message
@@ -130,7 +148,7 @@ async def rank(message: Message) -> str:
 
 #   ОБРАБОТЧИК КОМАНДЫ ПРОФИЛЬ ДЛЯ ГРУПП
 #-------------------------------------------------------------#
-@router.message(F.text.in_(['п', 'профиль', 'Профиль', 'П']), Filter(chat=["group"]))
+@router.message(F.text.in_(['п', 'профиль', 'Профиль', 'П']))
 async def profile(message: Message, bot: Bot) -> str:
     user_id = message.from_user.id
     next_rank = await score_rang(user_id)
